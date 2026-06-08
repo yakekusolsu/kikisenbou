@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聞き専坊 - {{ guild.name }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="app-title" href="/dashboard">聞き専坊</a>
+    <div class="user-chip">
+      {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="">{% endif %}
+      <span>{{ user.username }}</span>
+      <form method="post" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="ghost-button" type="submit">Logout</button>
+      </form>
+    </div>
+  </header>
+  <main class="page narrow">
+    <nav class="breadcrumb"><a href="/dashboard">サーバー一覧</a><span>/</span><span>{{ guild.name }}</span></nav>
+    <section class="section-header">
+      <h1>{{ guild.name }}</h1>
+    </section>
+
+    {% if listen_channel %}
+      <section class="listener-panel"
+               data-guild-id="{{ guild.guild_id }}"
+               data-channel-id="{{ listen_channel.channel_id }}"
+               data-ws-url="/ws/listen/{{ guild.guild_id }}/{{ listen_channel.channel_id }}">
+        <div class="vc-title">
+          <span class="speaker-icon">🔊</span>
+          <div>
+            <h2>{{ listen_channel.channel_name }}</h2>
+            <p id="listener-status">待機中</p>
+          </div>
+        </div>
+        <button id="listen-start" class="primary-button" type="button">▶ 聞き専開始</button>
+        <button id="listen-stop" class="ghost-button hidden" type="button">停止</button>
+        <div class="meter"><span id="audio-meter"></span></div>
+      </section>
+    {% else %}
+      <section class="channel-list">
+        <h2>接続中VC一覧</h2>
+        {% if channels %}
+          {% for channel in channels %}
+            {% if permitted %}
+              <a class="channel-row" href="/guild/{{ guild.guild_id }}/listen/{{ channel.channel_id }}">
+                <span>🔊</span>
+                <strong>{{ channel.channel_name }}</strong>
+              </a>
+            {% else %}
+              <div class="channel-row disabled">
+                <span>🔊</span>
+                <strong>{{ channel.channel_name }}</strong>
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% if not permitted %}
+            <div class="empty-state compact">このサーバーの視聴権限がありません。</div>
+          {% endif %}
+        {% else %}
+          <div class="empty-state compact">Botが接続中のVCはありません。</div>
+        {% endif %}
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>
