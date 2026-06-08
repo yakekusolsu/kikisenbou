@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聞き専坊 - Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="app-title" href="/dashboard">聞き専坊</a>
+    <div class="user-chip">
+      {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="">{% endif %}
+      <span>{{ user.username }}</span>
+      <form method="post" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="ghost-button" type="submit">Logout</button>
+      </form>
+    </div>
+  </header>
+  <main class="page">
+    <section class="section-header">
+      <h1>サーバー一覧</h1>
+    </section>
+    {% if guilds %}
+      <div class="guild-grid">
+        {% for guild in guilds %}
+          <a class="guild-card" href="/guild/{{ guild.guild_id }}">
+            {% if guild.icon_url %}
+              <img src="{{ guild.icon_url }}" alt="">
+            {% else %}
+              <div class="guild-placeholder">{{ guild.name[:1] }}</div>
+            {% endif %}
+            <span>{{ guild.name }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        Botが参加済みで、あなたが所属しているサーバーはまだありません。
+      </div>
+    {% endif %}
+  </main>
+</body>
+</html>
