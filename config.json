@@ -1,0 +1,12 @@
+{
+  "token": "",
+  "client_id": "",
+  "client_secret": "",
+  "redirect_uri": "http://127.0.0.1:8000/callback",
+  "host": "0.0.0.0",
+  "port": 8000,
+  "session_secret": "change-this-session-secret",
+  "internal_audio_secret": "change-this-internal-audio-secret",
+  "internal_ws_url": "ws://127.0.0.1:8000/internal/audio/{guild_id}",
+  "rate_limit_per_minute": 120
+}
